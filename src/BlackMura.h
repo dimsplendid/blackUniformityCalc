@@ -20,7 +20,7 @@ typedef struct _Datus {
 
 // input data
 typedef struct _Data {
-    char *name;
+    char name[20];
     uint32_t rows, cols;
     Datus *data; // index (x, y) -> data[x + cols*y]
 } Data;
@@ -39,9 +39,15 @@ void Data_print(Data *self);
 // ps: Must in the right data struct
 uint32_t find_cols(Datus *data);
 
-int Data_init(Data **data, char *file_name);
-int Data_calloc(void);
+// Data construct
+int Data_init(Data **self, const char *file_name);
+int Data_calloc(Data **self);
+// Data destruct
+int Data_free(Data *self);
 
 /* Aux Func of Black Uniformity */
+// convert CCD raw data to real pixel luminance
+// (Need checking the definition)
 int CCD2pixel(Data *CCD, Data *pixel);
+// Calculate black uniformity: U% = I_min / I_max
 double black_uniformity(Data *data, Range r);
