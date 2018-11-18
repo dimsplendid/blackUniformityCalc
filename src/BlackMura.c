@@ -2,20 +2,26 @@
 
 #include <string.h>
 
+// print the data as csv
 void Data_print(Data *self) {
-    for(uint32_t i = 0; i < self->rows * self->cols; i++) {
-        Datus *datus = &self->data[i];
-        printf("(%" PRIu32 ", %" PRIu32 ") = %.3f", \
+    FILE *f = fopen(self->name, "w");
+    for(uint32_t x = 0; x < self->range.x; x++) {
+        for(uint32_t y = 0; y < self->range.y; y++){
+            Datus *datus = &self->data[x * self->range.y + y];
+            fprintf(f,"%" PRIu32 ", %" PRIu32 ", %.3f\n", \
                 datus->pos.x, datus->pos.y, datus->val);
+        }
     }
+    fclose(f);
 }
 
-uint32_t find_cols(Datus *data) {
-    uint32_t cols = 0;
-    while ((data[cols].pos.x) != 1){
-        cols++;
+uint32_t find_yrange(Datus *data) {
+    uint32_t yrange = 0;
+    while ((data[yrange].pos.x) != 1){
+        yrange++;
     }
-    return cols;
+    printf("yrange = %" PRIu32 "\n", yrange);
+    return yrange;
 }
 
 int Data_init(Data **self, const char *file_name) {
@@ -37,8 +43,9 @@ int Data_init(Data **self, const char *file_name) {
     fclose(f);
     (*self)->data = data;
     strcpy((*self)->name, file_name);
-    (*self)->cols = find_cols(data);
-    (*self)->rows = counter / (*self)->cols;
+    (*self)->range.y = find_yrange(data);
+    (*self)->range.x = counter / (*self)->range.y;
+    printf("range x:%" PRIu32 " y: %" PRIu32 "\n", (*self)->range.x, (*self)->range.y);
     return 0;
 }
 int Data_calloc(Data **self) {
@@ -50,8 +57,6 @@ int Data_calloc(Data **self) {
         exit(EXIT_FAILURE);
     }
     (*self)->data = data;
-    (*self)->cols = 0;
-    (*self)->rows = 0;
     return 0;
 }
 
@@ -68,23 +73,23 @@ int CCD2pixel(Data *CCD, Data *pixel) {
     uint32_t avg_block_size = avg_block_length * avg_block_length;
     
     // Init pixel parameters
-    pixel->rows = CCD->rows - avg_block_length + 1;
-    pixel->cols = CCD->cols - avg_block_length + 1;
-    strcpy(pixel->name, CCD->name);
+    pixel->range.x = CCD->range.x - avg_block_length + 1;
+    pixel->range.y = CCD->range.y - avg_block_length + 1;
+    snprintf(pixel->name, 20, "%s_", CCD->name);
 
-    for(uint32_t x = 0; x < pixel->rows; x++) {
-        for(uint32_t y = 0; y < pixel->rows; y++) {
+    for(uint32_t x = 0; x < pixel->range.x; x++) {
+        for(uint32_t y = 0; y < pixel->range.y; y++) {
             // calc block avg
             double avg_tmp = 0.0;
             for(uint32_t x_block = 0; x_block < avg_block_length; x_block++) {
                 for(uint32_t y_block = 0; y_block < avg_block_length; y_block++) {
-                    avg_tmp += CCD->data[x + x_block + (y + y_block) * CCD->cols].val / avg_block_size;
+                    avg_tmp += CCD->data[((x + x_block) * CCD->range.y) + (y + y_block)].val / avg_block_size;
                 }
             }
             /// copy data to pixel array
-            pixel->data[x + pixel->cols * y].pos.x = x;
-            pixel->data[x + pixel->cols * y].pos.y = y;
-            pixel->data[x + pixel->cols * y].val = avg_tmp;
+            pixel->data[x * pixel->range.y + y].pos.x = x;
+            pixel->data[x * pixel->range.y + y].pos.y = y;
+            pixel->data[x * pixel->range.y + y].val = avg_tmp;
         }
     }
     return 0;
@@ -92,9 +97,9 @@ int CCD2pixel(Data *CCD, Data *pixel) {
 
 double black_uniformity(Data *pixel, Range r) {
     double min = 10, max = 1e-6, tmp = 0;
-    for(uint32_t x = r.x1y1.x; x <= r.x2y2.x; x++) {
-        for(uint32_t y = r.x1y1.y; y <= r.x2y2.y; y++) {
-            tmp = pixel->data[x + pixel->cols * y].val;
+    for(uint32_t x = r.x1y1.x; x < r.x2y2.x; x++) {
+        for(uint32_t y = r.x1y1.y; y < r.x2y2.y; y++) {
+            tmp = pixel->data[x * pixel->range.y + y].val;
             if (min > tmp)
                 min = tmp;
             if (max < tmp)

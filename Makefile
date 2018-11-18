@@ -15,6 +15,12 @@ debug: BlackMura_dbg.o src/main.c
 BlackMura_dbg.o: src/BlackMura.h src/BlackMura.h
 	$(CC) -g -c src/BlackMura.c -o BlackMura_dbg.o
 
+Windows: BlackMura_win.o src/main.c
+	$(WCC) -o bin/BlackMura_win.exe BlackMura_win.o src/main.c
+
+BlackMura_win.o: src/BlackMura.h src/BlackMura.c
+	$(WCC) -c src/BlackMura.c -o BlackMura_win.o
+
 test: src/test_input.c
 	$(CC) -o bin/test_input src/test_input.c
 
@@ -22,4 +28,4 @@ testWindows: src/test_input.c
 	$(WCC) -o bin/test_input.exe src/test_input.c
 
 clean:
-	rm -rf bin/*
+	rm -rf bin/* *.o

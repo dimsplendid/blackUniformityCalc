@@ -21,7 +21,7 @@ typedef struct _Datus {
 // input data
 typedef struct _Data {
     char name[20];
-    uint32_t rows, cols;
+    Coord range;
     Datus *data; // index (x, y) -> data[x + cols*y]
 } Data;
 
