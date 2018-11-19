@@ -3,12 +3,16 @@
 
 int main(int argc, char const *argv[]) {
     // check command input
-    if (argc < 3) {
+    if (argc < 6) {
         printf("We need csv raw data and edge distance.\n");
         exit(EXIT_FAILURE);
     }
-    uint32_t edge_dist = 0;
-    edge_dist = strtoul(argv[2], NULL, 10);
+    Coord x1y1, x2y2;
+    x1y1.x = strtoul(argv[2], NULL, 10);
+    x1y1.y = strtoul(argv[3], NULL, 10);
+    x2y2.x = strtoul(argv[4], NULL, 10);
+    x2y2.y = strtoul(argv[5], NULL, 10);
+
     // read file
     // printf("reading csv...\n");
 
@@ -24,9 +28,9 @@ int main(int argc, char const *argv[]) {
     
     // Calc Black Uniformity within range r
     // printf("cal Black U...\n");
-    Range r = {{edge_dist, edge_dist}, {pixel->range.x - edge_dist, pixel->range.y - edge_dist}};
+    Range r = { x1y1 , {pixel->range.x - x2y2.x, pixel->range.y - x2y2.y}};
     double U = black_uniformity(pixel, r);
-    printf("The Black Uniformity of %s with edge distance %" PRIu32 " is %.4f%%\n", pixel->name, edge_dist, U * 100);
+    printf("The Black Uniformity of %s is %.2f%%\n", CCD->name, U * 100);
 
     // print pixel data to check
     Data_print(pixel);
