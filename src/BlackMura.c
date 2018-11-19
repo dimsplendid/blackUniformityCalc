@@ -20,7 +20,7 @@ uint32_t find_yrange(Datus *data) {
     while ((data[yrange].pos.x) != 1){
         yrange++;
     }
-    printf("yrange = %" PRIu32 "\n", yrange);
+    // printf("yrange = %" PRIu32 "\n", yrange);
     return yrange;
 }
 
@@ -45,7 +45,7 @@ int Data_init(Data **self, const char *file_name) {
     strcpy((*self)->name, file_name);
     (*self)->range.y = find_yrange(data);
     (*self)->range.x = counter / (*self)->range.y;
-    printf("range x:%" PRIu32 " y: %" PRIu32 "\n", (*self)->range.x, (*self)->range.y);
+    // printf("range x:%" PRIu32 " y: %" PRIu32 "\n", (*self)->range.x, (*self)->range.y);
     return 0;
 }
 int Data_calloc(Data **self) {
