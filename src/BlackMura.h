@@ -1,3 +1,11 @@
+/**
+ * BlackMura.h
+ * 
+ * copyright (c) 2018
+ *  Wei-Hsiang Tseng
+ *  all right reserved
+ * 
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>

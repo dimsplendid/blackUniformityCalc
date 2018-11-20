@@ -1,3 +1,11 @@
+/**
+ * main.c
+ * 
+ * copyright (c) 2018
+ *  Wei-Hsiang Tseng
+ *  all right reserved
+ * 
+ */
 #include "BlackMura.h"
 #include <string.h>
 
@@ -29,12 +37,18 @@ int main(int argc, char const *argv[]) {
     // Calc Black Uniformity within range r
     // printf("cal Black U...\n");
     Range r = { x1y1 , {AnalysisBox->range.x - x2y2.x, AnalysisBox->range.y - x2y2.y}};
-    Datus minMax[6];
+    Datus minMax[6]={0};
     double U = black_uniformity(AnalysisBox, r, minMax);
-    printf("The Black Uniformity of %s is %.2f%%\n", CCD->name, U * 100);
+    printf("%s,%.2f%%,", CCD->name, U * 100);
+    for (uint32_t i = 0; i < 6; i++) {
+        printf("%" PRIu32 ",", minMax[i].pos.x);
+        printf("%" PRIu32 ",", minMax[i].pos.y);
+    }
+    printf("ascending order\n");
 
     // print AnalysisBox data to check
-    Data_print(AnalysisBox);
+    // Data_print(AnalysisBox);
+
     // release memory
     Data_free(CCD);
     Data_free(AnalysisBox);
