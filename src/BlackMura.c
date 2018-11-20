@@ -68,17 +68,17 @@ int Data_free(Data *self) {
     return 0;
 }
 
-int CCD2pixel(Data *CCD, Data *pixel) {
+int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox) {
     uint32_t avg_block_length = 8;
     uint32_t avg_block_size = avg_block_length * avg_block_length;
     
-    // Init pixel parameters
-    pixel->range.x = CCD->range.x - avg_block_length + 1;
-    pixel->range.y = CCD->range.y - avg_block_length + 1;
-    snprintf(pixel->name, 20, "%s_", CCD->name);
+    // Init AnalysisBox parameters
+    AnalysisBox->range.x = CCD->range.x - avg_block_length + 1;
+    AnalysisBox->range.y = CCD->range.y - avg_block_length + 1;
+    snprintf(AnalysisBox->name, 20, "%s_", CCD->name);
 
-    for(uint32_t x = 0; x < pixel->range.x; x++) {
-        for(uint32_t y = 0; y < pixel->range.y; y++) {
+    for(uint32_t x = 0; x < AnalysisBox->range.x; x++) {
+        for(uint32_t y = 0; y < AnalysisBox->range.y; y++) {
             // calc block avg
             double avg_tmp = 0.0;
             for(uint32_t x_block = 0; x_block < avg_block_length; x_block++) {
@@ -86,10 +86,10 @@ int CCD2pixel(Data *CCD, Data *pixel) {
                     avg_tmp += CCD->data[((x + x_block) * CCD->range.y) + (y + y_block)].val / avg_block_size;
                 }
             }
-            /// copy data to pixel array
-            pixel->data[x * pixel->range.y + y].pos.x = x;
-            pixel->data[x * pixel->range.y + y].pos.y = y;
-            pixel->data[x * pixel->range.y + y].val = avg_tmp;
+            /// copy data to AnalysisBox array
+            AnalysisBox->data[x * AnalysisBox->range.y + y].pos.x = x;
+            AnalysisBox->data[x * AnalysisBox->range.y + y].pos.y = y;
+            AnalysisBox->data[x * AnalysisBox->range.y + y].val = avg_tmp;
         }
     }
     return 0;

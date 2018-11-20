@@ -46,8 +46,7 @@ int Data_calloc(Data **self);
 int Data_free(Data *self);
 
 /* Aux Func of Black Uniformity */
-// convert CCD raw data to real pixel luminance
-// (Need checking the definition)
-int CCD2pixel(Data *CCD, Data *pixel);
+// convert CCD raw data to analysis box luminance
+int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox);
 // Calculate black uniformity: U% = I_min / I_max
 double black_uniformity(Data *data, Range r);
