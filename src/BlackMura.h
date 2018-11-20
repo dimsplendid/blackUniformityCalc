@@ -49,4 +49,6 @@ int Data_free(Data *self);
 // convert CCD raw data to analysis box luminance
 int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox);
 // Calculate black uniformity: U% = I_min / I_max
-double black_uniformity(Data *data, Range r);
+// minMax[0..2] -> Three smallest data
+// minMax[3..5] -> Three largest data
+double black_uniformity(Data *data, Range r, Datus minMax[6]);

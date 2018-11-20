@@ -95,15 +95,19 @@ int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox) {
     return 0;
 }
 
-double black_uniformity(Data *pixel, Range r) {
+double black_uniformity(Data *pixel, Range r, Datus minMax[6]) {
     double min = 10, max = 1e-6, tmp = 0;
     for(uint32_t x = r.x1y1.x; x < r.x2y2.x; x++) {
         for(uint32_t y = r.x1y1.y; y < r.x2y2.y; y++) {
             tmp = pixel->data[x * pixel->range.y + y].val;
-            if (min > tmp)
+            if (min > tmp) {
                 min = tmp;
-            if (max < tmp)
+                
+            }
+            if (max < tmp) {
                 max = tmp;
+
+            }
         }
     }
     return min/max;

@@ -29,7 +29,8 @@ int main(int argc, char const *argv[]) {
     // Calc Black Uniformity within range r
     // printf("cal Black U...\n");
     Range r = { x1y1 , {AnalysisBox->range.x - x2y2.x, AnalysisBox->range.y - x2y2.y}};
-    double U = black_uniformity(AnalysisBox, r);
+    Datus minMax[6];
+    double U = black_uniformity(AnalysisBox, r, minMax);
     printf("The Black Uniformity of %s is %.2f%%\n", CCD->name, U * 100);
 
     // print AnalysisBox data to check
