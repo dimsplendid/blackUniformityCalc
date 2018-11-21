@@ -37,21 +37,31 @@ int main(int argc, char const *argv[]) {
     // Calc Black Uniformity within range r
     // printf("cal Black U...\n");
     Range r = { x1y1 , {AnalysisBox->range.x - x2y2.x, AnalysisBox->range.y - x2y2.y}};
-    Datus minMax[6]={0};
+    Datus *minMax = calloc(6, sizeof(Datus));
     double U = black_uniformity(AnalysisBox, r, minMax);
+    // after calculating, the AnalysisBox data would be sorted ascending.
+
     printf("%s,%.2f%%,", CCD->name, U * 100);
     for (uint32_t i = 0; i < 6; i++) {
-        printf("%" PRIu32 ",", minMax[i].pos.x);
-        printf("%" PRIu32 ",", minMax[i].pos.y);
+        printf("%" PRIu32 ",", minMax[6 - 1 - i].pos.x);
+        printf("%" PRIu32 ",", minMax[6 - 1 - i].pos.y);
     }
-    printf("ascending order\n");
+    printf("descending order\n");
 
     // print AnalysisBox data to check
-    // Data_print(AnalysisBox);
+    const char output_name[80];
+    #ifdef WINDOWS
+    snprintf((char*)output_name, 80, "output\\%s",CCD->name);
+    #endif
+    #ifdef LINUX
+    snprintf((char*)output_name, 80, "output/%s",CCD->name);
+    #endif
+    Data_print(AnalysisBox, output_name);
 
     // release memory
     Data_free(CCD);
     Data_free(AnalysisBox);
+    free(minMax);
 
     return 0;
 }

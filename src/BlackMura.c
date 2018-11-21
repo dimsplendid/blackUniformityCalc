@@ -12,8 +12,8 @@
 #include <string.h>
 
 // print the data as csv
-void Data_print(Data *self) {
-    FILE *f = fopen(self->name, "w");
+void Data_print(Data *self, const char file_name[80]) {
+    FILE *f = fopen(file_name, "w");
     for(uint32_t x = 0; x < self->range.x; x++) {
         for(uint32_t y = 0; y < self->range.y; y++){
             Datus *datus = &self->data[x * self->range.y + y];
@@ -104,21 +104,90 @@ int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox) {
     return 0;
 }
 
-double black_uniformity(Data *pixel, Range r, Datus minMax[6]) {
-    // using Selection alg.
-    double min = 10, max = 1e-6, tmp = 0;
-    for(uint32_t x = r.x1y1.x; x < r.x2y2.x; x++) {
-        for(uint32_t y = r.x1y1.y; y < r.x2y2.y; y++) {
-            tmp = pixel->data[x * pixel->range.y + y].val;
-            if (min > tmp) {
-                min = tmp;
-                
-            }
-            if (max < tmp) {
-                max = tmp;
+// Merges two subarrays of arr[]. 
+// First subarray is arr[l..m] 
+// Second subarray is arr[m+1..r] 
+void merge(Datus arr[], int l, int m, int r) {
+    int i, j, k; 
+    int n1 = m - l + 1; 
+    int n2 =  r - m; 
+  
+    /* create temp arrays */
+    Datus *L = calloc(n1, sizeof(Datus));
+    Datus *R = calloc(n2, sizeof(Datus)); 
+  
+    /* Copy data to temp arrays L[] and R[] */
+    for (i = 0; i < n1; i++) 
+        L[i] = arr[l + i]; 
+    for (j = 0; j < n2; j++) 
+        R[j] = arr[m + 1+ j]; 
+  
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0; // Initial index of first subarray 
+    j = 0; // Initial index of second subarray 
+    k = l; // Initial index of merged subarray 
+    while (i < n1 && j < n2) { 
+        if (L[i].val <= R[j].val) {
+            arr[k] = L[i]; 
+            i++; 
+        } 
+        else {
+            arr[k] = R[j]; 
+            j++; 
+        } 
+        k++; 
+    } 
+  
+    /* Copy the remaining elements of L[], if there are any */
+    while (i < n1) {
+        arr[k] = L[i]; 
+        i++; 
+        k++; 
+    } 
+  
+    /* Copy the remaining elements of R[], if there are any */
+    while (j < n2) { 
+        arr[k] = R[j]; 
+        j++; 
+        k++; 
+    }
+    free(L);
+    free(R);
+} 
+  
+/* l is for left index and r is right index of the 
+   sub-array of arr to be sorted */
+void mergeSort(Datus arr[], int l, int r) {
+    if (l < r) {
+        // Same as (l+r)/2, but avoids overflow for 
+        // large l and r
+        int m = l+(r-l)/2; 
+  
+        // Sort first and second halves 
+        mergeSort(arr, l, m); 
+        mergeSort(arr, m+1, r); 
+  
+        merge(arr, l, m, r); 
+    } 
+} 
 
-            }
+double black_uniformity(Data *AnalysisBox, Range r, Datus minMax[6]) {
+    // using Merge sort
+    // copy array
+    uint32_t yrange = r.x2y2.y - r.x1y1.y;
+    uint32_t xrange = r.x2y2.x - r.x1y1.x;
+    Datus *ActiveBox = calloc(xrange * yrange, sizeof(Datus));
+    for (uint32_t x = 0; x < xrange; x++) {
+        for(uint32_t y = 0; y < yrange; y++) {
+            ActiveBox[x * yrange + y] = AnalysisBox->data[((r.x1y1.x + x) * AnalysisBox->range.y) + r.x1y1.y + y];
         }
     }
-    return min/max;
+    mergeSort(ActiveBox, 0, xrange * yrange - 1);
+    for (uint32_t i = 0; i < 3; i++) {
+        minMax[i] = ActiveBox[i];
+        minMax[6 - 1 - i] = ActiveBox[xrange * yrange - 1 - i];
+    }
+
+    free(ActiveBox);
+    return minMax[0].val/minMax[5].val;
 }

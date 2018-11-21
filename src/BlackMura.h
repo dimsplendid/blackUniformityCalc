@@ -39,7 +39,7 @@ typedef struct _Range {
     Coord x2y2; // down-right point of the matrix
 } Range;
 
-void Data_print(Data *self);
+void Data_print(Data *self, const char *filename);
 
 /* read aux function */
 
@@ -48,7 +48,7 @@ void Data_print(Data *self);
 uint32_t find_cols(Datus *data);
 
 // Data construct
-int Data_init(Data **self, const char *file_name);
+int Data_init(Data **self, const char file_name[80]);
 int Data_calloc(Data **self);
 // Data destruct
 int Data_free(Data *self);

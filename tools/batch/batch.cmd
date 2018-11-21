@@ -11,11 +11,9 @@ set y1=%2
 set x2=%3
 set y2=%4
 
-del out.csv /F /Q
+del ouput\out.csv /F /Q
 
 for %%f in (*.csv) do (
     echo %%~nf
-    BlackMura_win "%%~nf.csv" %x1% %y1% %x2% %y2% >> out
+    BlackMura_win "%%~nf.csv" %x1% %y1% %x2% %y2% >> output\out.csv
 )
-
-ren out out.csv
