@@ -12,7 +12,12 @@ So the size of total analysis squares, the analysis box, is (raw.xrange - 7) * (
 At the given range of analysis boxes, 
 U = I<sub>min</sub>/I<sub>max</sub>
 ## Usage
-one raw data
+one raw data  
+> the raw data formate must be  
+> x<sub>1</sub>,y<sub>1</sub>,value<sub>1</sub>  
+> ...  
+> x<sub>N</sub>,y<sub>N</sub>,value<sub>N</sub>  
+
 for Linux
 ```
 BlackMura [path/to/raw.csv] [x1] [y1] [x2] [y2]
