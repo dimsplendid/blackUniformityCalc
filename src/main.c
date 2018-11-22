@@ -7,6 +7,7 @@
  * 
  */
 #include "BlackMura.h"
+#include "tool.h"
 #include <string.h>
 
 int main(int argc, char const *argv[]) {
@@ -42,7 +43,7 @@ int main(int argc, char const *argv[]) {
     double U0 = black_uniformity(AnalysisBox, r0, minMax);
     double U = black_uniformity(AnalysisBox, r, minMax);
 
-    printf("%s,%.2f%%,%.2f%%", CCD->name, U0 * 100, U * 100);
+    printf("%s,%.2f%%,%.2f%%,", CCD->name, U0 * 100, U * 100);
     for (uint32_t i = 0; i < 6; i++) {
         printf("%" PRIu32 ",", minMax[6 - 1 - i].pos.x);
         printf("%" PRIu32 ",", minMax[6 - 1 - i].pos.y);
@@ -51,11 +52,12 @@ int main(int argc, char const *argv[]) {
 
     // print AnalysisBox data to check
     const char output_name[80];
+    rmFileAtrr(CCD->name);
     #ifdef WINDOWS
-    snprintf((char*)output_name, 80, "output\\%s",CCD->name);
+    snprintf((char*)output_name, 80, "output\\%s_BlockAvg.csv",CCD->name);
     #endif
     #ifdef LINUX
-    snprintf((char*)output_name, 80, "output/%s",CCD->name);
+    snprintf((char*)output_name, 80, "output/%s_BlockAvg.csv",CCD->name);
     #endif
     Data_print(AnalysisBox, output_name);
 
