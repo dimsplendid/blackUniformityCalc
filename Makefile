@@ -24,7 +24,7 @@ Windows: BlackMura_win.o tool_win.o src/main.c
 BlackMura_win.o: src/BlackMura.h src/BlackMura.c
 	$(WCC) -c src/BlackMura.c -o BlackMura_win.o
 
-tool_win.o: src/tool.h src/tool.o
+tool_win.o: src/tool.h src/tool.c
 	$(WCC) -c src/tool.c -o tool_win.o
 
 test: src/test_input.c
