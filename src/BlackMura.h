@@ -31,7 +31,7 @@ typedef struct _Datus {
 typedef struct _Data {
     char name[20];
     Coord range;
-    Datus *data; // index (x, y) -> data[x + cols*y]
+    Datus *data; // index (x, y) -> data[x*yrange + y]
 } Data;
 
 // Data select
@@ -42,9 +42,9 @@ typedef struct _Range {
 
 void Data_print(Data *self, const char *filename);
 
-/* read aux function */
+/* read input file aux function */
 
-// return cols of the given data
+// return y-range of the given data
 // ps: Must in the right data struct
 uint32_t find_cols(Datus *data);
 
