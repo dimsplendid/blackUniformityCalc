@@ -77,8 +77,8 @@ int Data_free(Data *self) {
     return 0;
 }
 
-int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox) {
-    uint32_t avg_block_length = 8;
+int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox, uint32_t avg_block_length) {
+    // uint32_t avg_block_length = 8;
     uint32_t avg_block_size = avg_block_length * avg_block_length;
     
     // Init AnalysisBox parameters

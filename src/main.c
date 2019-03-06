@@ -12,8 +12,9 @@
 
 int main(int argc, char const *argv[]) {
     // check command input
-    if (argc < 6) {
+    if (argc != 7) {
         printf("We need csv raw data and edge distance.\n");
+        printf("./blackU [file_name] x1 y1 x2 y2 avg_block_size.\n");
         exit(EXIT_FAILURE);
     }
     Coord x1y1, x2y2;
@@ -21,6 +22,8 @@ int main(int argc, char const *argv[]) {
     x1y1.y = strtoul(argv[3], NULL, 10);
     x2y2.x = strtoul(argv[4], NULL, 10);
     x2y2.y = strtoul(argv[5], NULL, 10);
+
+    uint32_t avg_block_length = strtoul(argv[6], NULL, 10);
 
     // read file
     // printf("reading csv...\n");
@@ -33,7 +36,7 @@ int main(int argc, char const *argv[]) {
     // conver CCD raw data to AnalysisBox by calculating block average
     // printf("conver CCD raw to AnalysisBox...\n");
 
-    CCD2AnalysisBox(CCD, AnalysisBox);
+    CCD2AnalysisBox(CCD, AnalysisBox, avg_block_length);
     
     // Calc Black Uniformity within range r
     // printf("cal Black U...\n");

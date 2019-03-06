@@ -40,7 +40,7 @@ typedef struct _Range {
     Coord x2y2; // down-right point of the matrix
 } Range;
 
-void Data_print(Data *self, const char *filename);
+void Data_print(Data *self, const char *file_name);
 
 /* read aux function */
 
@@ -56,7 +56,7 @@ int Data_free(Data *self);
 
 /* Aux Func of Black Uniformity */
 // convert CCD raw data to analysis box luminance
-int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox);
+int CCD2AnalysisBox(Data *CCD, Data *AnalysisBox, uint32_t box_size);
 // Calculate black uniformity: U% = I_min / I_max
 // minMax[0..2] -> Three smallest data
 // minMax[3..5] -> Three largest data
