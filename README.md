@@ -20,7 +20,7 @@ one raw data
 
 for Linux
 ```
-BlackMura [path/to/raw.csv] [x1] [y1] [x2] [y2]
+BlackMura [path/to/raw.csv] [x1] [y1] [x2] [y2] [avg box length]
 ```
 for Windows
 ```
